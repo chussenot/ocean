@@ -44,18 +44,16 @@ fn main() {
 fn client() {
     let mut handle = Easy::new();
     loop {
-        println!("Loop forever!");
+        info!("Loop forever!");
         handle.url("http://127.0.0.1:3000").unwrap();
         handle.perform().unwrap();
-        println!("{}", handle.response_code().unwrap());
         let output = Command::new("sh")
            .arg("-c")
-           .arg("man ed")
+           .arg("ls -la")
            .output()
            .expect("Failed to execute process");
-        println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
-
-        let mut data = "this is the body".as_bytes();
+        let output = format!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+        let mut data = output.as_bytes();
 
         let mut easy = Easy::new();
         easy.url("http://127.0.0.1:3000").unwrap();
@@ -103,7 +101,7 @@ impl Service for OceanService {
           },
           (&Method::Post, "/") => {
               // we'll be back
-              println!("{}", "Yes!");
+              println!("{}", "OK");
               response.set_body("Thx for the fish!");
           },
           _ => {
