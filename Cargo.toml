@@ -1,0 +1,6 @@
+[package]
+name = "ocean"
+version = "0.1.0"
+authors = ["Clement Hussenot <chussenota@gmail.com>"]
+
+[dependencies]
