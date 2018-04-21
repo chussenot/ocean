@@ -1,6 +1,6 @@
 [package]
-name = "ocean"
-version = "0.1.0"
+name = "0cean"
+version = "0.1.1"
 authors = ["Clement Hussenot <chussenota@gmail.com>"]
 description = "Thx for the fish"
 repository = "https://github.com/chussenot/ocean"

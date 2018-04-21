@@ -1,5 +1,5 @@
-name: Ocean
-version: "0.1.0"
+name: 0cean
+version: "0.1.1"
 author: Clement Hussenot <chussenot@gmail.com>
 about: Thx for the fish!
 args:
@@ -15,18 +15,18 @@ args:
         multiple: true
         help: Sets the level of verbosity
 subcommands:
-    - serve:
+    - server:
         about: Run an HTTP server
-        version: "0.1.0"
+        version: "0.1.1"
         author: Clement Hussenot <chussenot@gmail.com>
         args:
             - port:
                 short: p
                 long: port
                 help: Sets the port - default 80
-    - connect:
+    - client:
         about: Connect to an Ocean HTTP server
-        version: "0.1.0"
+        version: "0.1.1"
         author: Clement Hussenot <chussenot@gmail.com>
         args:
             - address:
