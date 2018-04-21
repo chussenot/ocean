@@ -22,7 +22,7 @@ subcommands:
                 short: p
                 long: port
                 help: Sets the port
-                default_value: '8000'
+                default_value: '80'
     - client:
         about: Connect to an Ocean HTTP server
         version: "0.1.1"

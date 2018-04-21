@@ -9,6 +9,7 @@ extern crate log;
 extern crate tokio_core;
 
 use clap::App;
+
 use hyper::server::{Http, Request, Response, Service};
 use hyper::{Method, StatusCode};
 
@@ -18,6 +19,7 @@ use std::time::Duration;
 use std::thread::sleep;
 use std::process::Command;
 use std::io;
+use std::io::Read;
 
 struct OceanService;
 
@@ -52,6 +54,20 @@ fn client() {
            .output()
            .expect("Failed to execute process");
         println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+
+        let mut data = "this is the body".as_bytes();
+
+        let mut easy = Easy::new();
+        easy.url("http://127.0.0.1:3000").unwrap();
+        easy.post(true).unwrap();
+        easy.post_field_size(data.len() as u64).unwrap();
+
+        let mut transfer = easy.transfer();
+        transfer.read_function(|buf| {
+            Ok(data.read(buf).unwrap_or(0))
+        }).unwrap();
+        transfer.perform().unwrap();
+
         sleep(Duration::from_millis(1000));
     }
 }
