@@ -13,6 +13,14 @@ fn main() {
     let _matches = App::from_yaml(yaml).get_matches();
     if let Some(_matches) = _matches.subcommand_matches("serve") {
         let _result = serve();
+    } else if let Some(_matches) = _matches.subcommand_matches("connect") {
+        connect();
+    }
+}
+
+fn connect() {
+    loop {
+        println!("Loop forever!");
     }
 }
 
