@@ -7,19 +7,18 @@ extern crate pretty_env_logger;
 #[macro_use]
 extern crate log;
 extern crate tokio_core;
+extern crate reqwest;
 
-use clap::App;
-
-use hyper::server::{Http, Request, Response, Service};
-use hyper::{Method, StatusCode};
-
-use futures::future::Future;
-use curl::easy::Easy;
 use std::time::Duration;
 use std::thread::sleep;
 use std::process::Command;
 use std::io;
 use std::io::Read;
+use clap::App;
+use hyper::server::{Http, Request, Response, Service};
+use hyper::{Method, StatusCode};
+use futures::future::Future;
+use curl::easy::Easy;
 
 struct OceanService;
 
@@ -49,26 +48,27 @@ fn client() {
     loop {
         info!("Loop forever!");
         handle.url("http://127.0.0.1:3000").unwrap();
+        handle.get(true).unwrap();
         handle.perform().unwrap();
+
+        let text = reqwest::get("http://127.0.0.1:3000").unwrap()
+            .text();
+        let cmd = format!("{:?}", text);
         let output = Command::new("sh")
            .arg("-c")
-           .arg("ls -la")
+           .arg(cmd)
            .output()
            .expect("Failed to execute process");
         let output = format!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+        println!("{}", output);
         let mut data = output.as_bytes();
-
-        let mut easy = Easy::new();
-        easy.url("http://127.0.0.1:3000").unwrap();
-        easy.post(true).unwrap();
-        easy.post_field_size(data.len() as u64).unwrap();
-
-        let mut transfer = easy.transfer();
+        handle.post(true).unwrap();
+        handle.post_field_size(data.len() as u64).unwrap();
+        let mut transfer = handle.transfer();
         transfer.read_function(|buf| {
             Ok(data.read(buf).unwrap_or(0))
         }).unwrap();
         transfer.perform().unwrap();
-
         sleep(Duration::from_millis(1000));
     }
 }
