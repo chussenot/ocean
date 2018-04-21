@@ -1,19 +1,23 @@
 #[macro_use]
 extern crate clap;
 extern crate hyper;
+extern crate futures;
 extern crate curl;
 extern crate pretty_env_logger;
 #[macro_use]
 extern crate log;
 
 use clap::App;
-use hyper::header::{ContentLength, ContentType};
-use hyper::server::{Http, Response, const_service, service_fn};
+use hyper::header::{ContentLength};
+use hyper::server::{Http, Request, Response, Service};
+use futures::future::Future;
 use curl::easy::Easy;
 use std::time::Duration;
 use std::thread::sleep;
 use std::process::Command;
+use std::io;
 
+struct OceanService;
 static CMD: &'static str = "man vim";
 
 fn main() {
@@ -55,14 +59,36 @@ fn server() -> Result<(), hyper::Error> {
     let port = 3000;
     let addr = ([127, 0, 0, 1], port).into();
 
-    let hello = const_service(service_fn(|_req|{
-        Ok(Response::<hyper::Body>::new()
-            .with_header(ContentLength(CMD.len() as u64))
-            .with_header(ContentType::plaintext())
-            .with_body(CMD))
-    }));
-
-    let server = Http::new().bind(&addr, hello)?;
+    let server = Http::new().bind(&addr, || Ok(OceanService)).unwrap();
     println!("Listening on http://{}", addr);
     server.run()
+}
+
+impl Service for OceanService {
+    type Request = Request;
+    type Response = Response;
+    type Error = hyper::Error;
+    // The future representing the eventual Response your call will
+    // resolve to. This can change to whatever Future you need.
+    type Future = Box<Future<Item=Self::Response, Error=Self::Error>>;
+
+    fn call(&self, _req: Request) -> Self::Future {
+        // We're currently ignoring the Request
+        // And returning an 'ok' Future, which means it's ready
+        // immediately, and build a Response with the 'PHRASE' body.
+
+        let mut stdin = io::stdin();
+        let input = &mut String::new();
+
+        println!("{}", "shell>");
+        input.clear();
+        stdin.read_line(input);
+        println!("{}", input);
+
+        Box::new(futures::future::ok(
+            Response::new()
+                .with_header(ContentLength(input.len() as u64))
+                .with_body(CMD)
+        ))
+    }
 }
