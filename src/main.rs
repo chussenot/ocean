@@ -11,6 +11,8 @@ extern crate tokio_core;
 use clap::App;
 use hyper::header::{ContentLength};
 use hyper::server::{Http, Request, Response, Service};
+use hyper::{Method, StatusCode};
+
 use futures::future::Future;
 use curl::easy::Easy;
 use std::time::Duration;
@@ -73,23 +75,34 @@ impl Service for OceanService {
     // resolve to. This can change to whatever Future you need.
     type Future = Box<Future<Item=Self::Response, Error=Self::Error>>;
 
-    fn call(&self, _req: Request) -> Self::Future {
+    fn call(&self, req: Request) -> Self::Future {
         // We're currently ignoring the Request
         // And returning an 'ok' Future, which means it's ready
         // immediately, and build a Response with the 'PHRASE' body.
 
-        let stdin = io::stdin();
-        let input = &mut String::new();
+        let mut response = Response::new();
 
-        println!("{}", "shell>");
-        input.clear();
-        stdin.read_line(input);
-        println!("{}", input);
+         match (req.method(), req.path()) {
+            (&Method::Get, "/") => {
+                let stdin = io::stdin();
+                let input = &mut String::new();
 
-        Box::new(futures::future::ok(
-            Response::new()
-                .with_header(ContentLength(input.len() as u64))
-                .with_body(CMD)
-        ))
+                println!("{}", "shell>");
+                input.clear();
+                stdin.read_line(input);
+                println!("{}", input);
+                response.set_body("ls");
+            },
+            (&Method::Post, "/") => {
+                // we'll be back
+                println!("{}", "Yes!");
+                response.set_body("Thx for the fish!");
+            },
+            _ => {
+                response.set_status(StatusCode::NotFound);
+            },
+        };
+
+        Box::new(futures::future::ok(response))
     }
 }
