@@ -2,6 +2,9 @@
 extern crate clap;
 extern crate hyper;
 extern crate curl;
+extern crate pretty_env_logger;
+#[macro_use]
+extern crate log;
 
 use clap::App;
 use hyper::header::{ContentLength, ContentType};
@@ -14,6 +17,7 @@ use std::process::Command;
 static CMD: &'static str = "man vim";
 
 fn main() {
+    pretty_env_logger::init();
     let yaml = load_yaml!("cli.yml");
     let _matches = App::from_yaml(yaml)
         .author(crate_authors!())
@@ -58,5 +62,6 @@ fn server() -> Result<(), hyper::Error> {
     }));
 
     let server = Http::new().bind(&addr, hello)?;
+    println!("Listening on http://{}", addr);
     server.run()
 }
