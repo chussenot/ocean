@@ -1,6 +1,4 @@
 name: 0cean
-version: "0.1.1"
-author: Clement Hussenot <chussenot@gmail.com>
 about: Thx for the fish!
 args:
     - config:
@@ -23,7 +21,8 @@ subcommands:
             - port:
                 short: p
                 long: port
-                help: Sets the port - default 80
+                help: Sets the port
+                default_value: '8000'
     - client:
         about: Connect to an Ocean HTTP server
         version: "0.1.1"

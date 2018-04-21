@@ -15,8 +15,14 @@ static CMD: &'static str = "man vim";
 
 fn main() {
     let yaml = load_yaml!("cli.yml");
-    let _matches = App::from_yaml(yaml).get_matches();
+    let _matches = App::from_yaml(yaml)
+        .author(crate_authors!())
+        .version(crate_version!())
+        .get_matches();
     if let Some(_matches) = _matches.subcommand_matches("server") {
+        if let Some(port) = _matches.value_of("port") {
+          println!("A port was passed: {}", port);
+        }
         let _result = server();
     } else if let Some(_matches) = _matches.subcommand_matches("client") {
         client();
@@ -41,7 +47,8 @@ fn client() {
 }
 
 fn server() -> Result<(), hyper::Error> {
-    let addr = ([127, 0, 0, 1], 3000).into();
+    let port = 3000;
+    let addr = ([127, 0, 0, 1], port).into();
 
     let hello = const_service(service_fn(|_req|{
         Ok(Response::<hyper::Body>::new()
