@@ -9,6 +9,7 @@ use hyper::server::{Http, Response, const_service, service_fn};
 use curl::easy::Easy;
 use std::time::Duration;
 use std::thread::sleep;
+use std::process::Command;
 
 static TEXT: &'static str = "Hello, Ocean!";
 
@@ -30,6 +31,14 @@ fn connect() {
         handle.url("http://127.0.0.1:3000").unwrap();
         handle.perform().unwrap();
         println!("{}", handle.response_code().unwrap());
+        let output = Command::new("sh")
+           .arg("-c")
+           .arg("man ed")
+           .output()
+           .expect("failed to execute process");
+        println!("status: {}", output.status);
+        println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+        println!("stderr: {}", String::from_utf8_lossy(&output.stderr));
         sleep(Duration::from_millis(1000));
     }
 }
@@ -47,4 +56,3 @@ fn serve() -> Result<(), hyper::Error> {
     let server = Http::new().bind(&addr, hello)?;
     server.run()
 }
-
