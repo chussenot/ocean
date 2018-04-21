@@ -18,6 +18,7 @@ static CMD: &'static str = "man vim";
 
 fn main() {
     pretty_env_logger::init();
+    info!("0cean logs");
     let yaml = load_yaml!("cli.yml");
     let _matches = App::from_yaml(yaml)
         .author(crate_authors!())
