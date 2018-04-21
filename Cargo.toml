@@ -7,3 +7,4 @@ repository = "https://github.com/chussenot/ocean"
 
 [dependencies]
 clap = {version = "2.31.2", features = ["yaml"]}
+hyper = "0.11.24"
