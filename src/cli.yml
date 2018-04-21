@@ -1,0 +1,35 @@
+name: Ocean
+version: "0.1.0"
+author: Clement Hussenot <chussenot@gmail.com>
+about: Thx for the fish!
+args:
+    - config:
+        short: c
+        long: config
+        value_name: FILE
+        help: Sets a custom config file
+        takes_value: true
+    - verbose:
+        short: v
+        long: verbose
+        multiple: true
+        help: Sets the level of verbosity
+subcommands:
+    - serve:
+        about: Run an HTTP server
+        version: "0.1.0"
+        author: Clement Hussenot <chussenot@gmail.com>
+        args:
+            - port:
+                short: p
+                long: port
+                help: Sets the port - default 80
+    - connect:
+        about: Connect to an Ocean HTTP server
+        version: "0.1.0"
+        author: Clement Hussenot <chussenot@gmail.com>
+        args:
+            - address:
+                short: a
+                long: addr
+                help: Sets the IP:PORT combination (default "127.0.0.1:80")
