@@ -1,4 +1,5 @@
 
+[![Build Status](https://www.travis-ci.org/chussenot/ocean.svg?branch=master)](https://www.travis-ci.org/chussenot/ocean)
 
 Ressources
 ==========
