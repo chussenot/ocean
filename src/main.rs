@@ -9,7 +9,6 @@ extern crate log;
 extern crate tokio_core;
 
 use clap::App;
-use hyper::header::{ContentLength};
 use hyper::server::{Http, Request, Response, Service};
 use hyper::{Method, StatusCode};
 
@@ -21,7 +20,6 @@ use std::process::Command;
 use std::io;
 
 struct OceanService;
-static CMD: &'static str = "man vim";
 
 fn main() {
     pretty_env_logger::init();
@@ -76,31 +74,25 @@ impl Service for OceanService {
     type Future = Box<Future<Item=Self::Response, Error=Self::Error>>;
 
     fn call(&self, req: Request) -> Self::Future {
-        // We're currently ignoring the Request
-        // And returning an 'ok' Future, which means it's ready
-        // immediately, and build a Response with the 'PHRASE' body.
-
         let mut response = Response::new();
 
-         match (req.method(), req.path()) {
-            (&Method::Get, "/") => {
-                let stdin = io::stdin();
-                let input = &mut String::new();
-
-                println!("{}", "shell>");
-                input.clear();
-                stdin.read_line(input);
-                println!("{}", input);
-                response.set_body("ls");
-            },
-            (&Method::Post, "/") => {
-                // we'll be back
-                println!("{}", "Yes!");
-                response.set_body("Thx for the fish!");
-            },
-            _ => {
-                response.set_status(StatusCode::NotFound);
-            },
+        match (req.method(), req.path()) {
+          (&Method::Get, "/") => {
+              println!("{}", "shell>");
+              let stdin = io::stdin();
+              let input = &mut String::new();
+              let _result = stdin.read_line(input);
+              let body = format!("{}", input);
+              response.set_body(body);
+          },
+          (&Method::Post, "/") => {
+              // we'll be back
+              println!("{}", "Yes!");
+              response.set_body("Thx for the fish!");
+          },
+          _ => {
+              response.set_status(StatusCode::NotFound);
+          },
         };
 
         Box::new(futures::future::ok(response))
