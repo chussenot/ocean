@@ -6,6 +6,7 @@ extern crate curl;
 extern crate pretty_env_logger;
 #[macro_use]
 extern crate log;
+extern crate tokio_core;
 
 use clap::App;
 use hyper::header::{ContentLength};
@@ -77,7 +78,7 @@ impl Service for OceanService {
         // And returning an 'ok' Future, which means it's ready
         // immediately, and build a Response with the 'PHRASE' body.
 
-        let mut stdin = io::stdin();
+        let stdin = io::stdin();
         let input = &mut String::new();
 
         println!("{}", "shell>");
