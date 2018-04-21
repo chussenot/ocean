@@ -1,10 +1,14 @@
 #[macro_use]
 extern crate clap;
 extern crate hyper;
+extern crate curl;
 
 use clap::App;
 use hyper::header::{ContentLength, ContentType};
 use hyper::server::{Http, Response, const_service, service_fn};
+use curl::easy::Easy;
+use std::time::Duration;
+use std::thread::sleep;
 
 static TEXT: &'static str = "Hello, Ocean!";
 
@@ -19,8 +23,14 @@ fn main() {
 }
 
 fn connect() {
+    let mut handle = Easy::new();
+
     loop {
         println!("Loop forever!");
+        handle.url("http://127.0.0.1:3000").unwrap();
+        handle.perform().unwrap();
+        println!("{}", handle.response_code().unwrap());
+        sleep(Duration::from_millis(1000));
     }
 }
 
