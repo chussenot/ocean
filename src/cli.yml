@@ -22,7 +22,7 @@ subcommands:
                 short: p
                 long: port
                 help: Sets the port
-                default_value: '80'
+                default_value: "80"
     - client:
         about: Connect to an Ocean HTTP server
         version: "0.1.1"
@@ -31,4 +31,5 @@ subcommands:
             - address:
                 short: a
                 long: addr
-                help: Sets the IP:PORT combination (default "127.0.0.1:80")
+                help: Sets the IP:PORT combination
+                default_value: "127.0.0.1:80"

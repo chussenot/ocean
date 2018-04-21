@@ -37,6 +37,9 @@ fn main() {
         }
         let _result = server();
     } else if let Some(_matches) = _matches.subcommand_matches("client") {
+        if let Some(address) = _matches.value_of("address") {
+          println!("Address was passed: {}", address);
+        }
         client();
     }
 }
